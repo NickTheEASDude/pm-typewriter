@@ -1,3 +1,4 @@
+EXTRA_QEMUFLAGS ?=
 export
 GLOBAL_INC = $(abspath $(dir $(lastword $(MAKEFILE_LIST))))/include
 QEMU_I386 := qemu-system-i386

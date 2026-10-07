@@ -5,7 +5,12 @@
 
 #define _INTR __attribute__((section(".text.interrupts")))
 
-volatile uint8_t state = 0;
+typedef enum {
+	STATE_NORMAL,
+	STATE_SKIP
+} kbdState_t;
+
+static kbdState_t state = STATE_NORMAL;
 
 const char translation[0x80] = {
 	[0x0E] = '`', [0x16] = '1', [0x1E] = '2', [0x26] = '3', [0x25] = '4',
@@ -31,28 +36,18 @@ _INTR void c_irq1(void) {
 	while (inb(0x64) & 1) {
 		uint8_t scancode = inb(0x60);
 		switch (state) {
-			case 0:
-				if (scancode == 0xE0)
-					state = 1;
-				else if (scancode == 0xF0)
-					state = 2;
+			case STATE_NORMAL:
+				if (scancode == 0xE0 || scancode == 0xF0)
+					state = STATE_SKIP;
 				else {
 					uint8_t character = translation[scancode];
 					if (character)
 						vga_putc(character);
-					state = 0;
+					state = STATE_NORMAL;
 				}
 				break;
-			case 1:
-				if (scancode == 0xF0)
-					state = 2;
-				state = 0;
-				break;
-			case 2:
-				state = 0;
-				break;
-			default:
-				state = 0;
+			case STATE_SKIP:
+				state = STATE_NORMAL;
 				break;
 		}
 	}
