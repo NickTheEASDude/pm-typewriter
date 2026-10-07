@@ -1,0 +1,42 @@
+%ifndef	PIC_MAC
+%define	PIC_MAC
+
+%define	PIC1		20h
+%define	PIC2		0A0h
+%define	PIC1_COMMAND	PIC1
+%define	PIC1_DATA	PIC1+1
+%define	PIC2_COMMAND	PIC2
+%define	PIC2_DATA	PIC2+1
+
+%define	ICW1_ICW4	01h
+%define	ICW1_SINGLE	02h
+%define	ICW1_INTERVAL4	04h
+%define	ICW1_LEVEL	08h
+%define	ICW1_INIT	10h
+
+%define	ICW4_8086	01h
+%define	ICW4_AUTO	02h
+%define	ICW4_BUF_SLAVE	08h
+%define	ICW4_BUF_MASTER	0Ch
+%define	ICW4_SFNM	10h
+
+%define	CASCADE_IRQ	2
+
+%macro	io_wait	0
+	push	ax
+	mov	al,0
+	out	80h,al
+	pop	ax
+%endmacro
+
+%macro	pout	2
+	push	ax
+	push	dx
+	mov	al,%1
+	mov	dx,%2
+	out	dx,al
+	pop	dx
+	pop	ax
+%endmacro
+
+%endif
