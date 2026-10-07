@@ -1,0 +1,114 @@
+Archive member included to satisfy reference by file (symbol)
+
+interrupts/interrupts_asm.o   stage2/stage2.o (setupPIC)
+interrupts/interrupts_c.o     interrupts/interrupts_asm.o (c_exception8)
+misc/io_c.o                   interrupts/interrupts_c.o (inb)
+misc/ps2_c.o                  stage2/stage2.o (setupPS2)
+misc/uart_asm.o               stage2/stage2.o (setupUART)
+
+Discarded input sections
+
+ .eh_frame      0x00000000       0x34 stage2/stage2.o
+ .comment       0x00000000       0x1c stage2/stage2.o
+ .note.GNU-stack
+                0x00000000        0x0 stage2/stage2.o
+ .comment       0x00000000       0x1c interrupts/interrupts_c.o
+ .note.GNU-stack
+                0x00000000        0x0 interrupts/interrupts_c.o
+ .note.gnu.property
+                0x00000000       0x28 interrupts/interrupts_c.o
+ .eh_frame      0x00000000       0x78 interrupts/interrupts_c.o
+ .comment       0x00000000       0x1c misc/io_c.o
+ .note.GNU-stack
+                0x00000000        0x0 misc/io_c.o
+ .note.gnu.property
+                0x00000000       0x28 misc/io_c.o
+ .eh_frame      0x00000000      0x138 misc/io_c.o
+ .comment       0x00000000       0x1c misc/ps2_c.o
+ .note.GNU-stack
+                0x00000000        0x0 misc/ps2_c.o
+ .note.gnu.property
+                0x00000000       0x28 misc/ps2_c.o
+ .eh_frame      0x00000000       0x38 misc/ps2_c.o
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+*default*        0x00000000         0xffffffff
+
+Linker script and memory map
+
+                0x00007e00                        . = 0x7e00
+
+.text           0x00007e00      0x859
+ *(.text.start)
+ .text.start    0x00007e00       0x36 stage2/stage2.o
+                0x00007e00                start32
+ *(.text .text.*)
+ .text          0x00007e36       0x19 stage2/stage2.o
+                0x00007e36                cstart
+ .text.interrupts
+                0x00007e4f       0xa8 interrupts/interrupts_asm.o
+ *fill*         0x00007ef7        0x9 
+ .text          0x00007f00      0x16f interrupts/interrupts_asm.o
+                0x00007f00                setupPIC
+                0x00007fd7                setupIDT
+ .text          0x0000806f        0x0 interrupts/interrupts_c.o
+ .text.interrupts
+                0x0000806f      0x17a interrupts/interrupts_c.o
+                0x0000806f                c_exception8
+                0x0000808a                c_irq1
+                0x00008166                c_irq4
+ .text          0x000081e9      0x2c9 misc/io_c.o
+                0x000081e9                inb
+                0x000081ff                outb
+                0x0000820e                serial_putc
+                0x00008369                serial_puts
+                0x00008394                vga_putc
+                0x00008487                vga_puts
+ .text          0x000084b2      0x121 misc/ps2_c.o
+                0x000084b2                setupPS2
+ *fill*         0x000085d3        0xd 
+ .text          0x000085e0       0x79 misc/uart_asm.o
+                0x000085e0                setupUART
+
+.data           0x00008660      0x10a
+ *(.rodata .rodata.*)
+ .rodata        0x00008660        0xb stage2/stage2.o
+ *fill*         0x0000866b       0x15 
+ .rodata        0x00008680       0xa7 interrupts/interrupts_c.o
+                0x00008680                translation
+ *fill*         0x00008727        0x1 
+ .rodata        0x00008728       0x39 misc/ps2_c.o
+ *(.data .data.*)
+ .data          0x00008761        0x0 stage2/stage2.o
+ *fill*         0x00008761        0x3 
+ .data          0x00008764        0x6 interrupts/interrupts_asm.o
+ .data          0x0000876a        0x0 interrupts/interrupts_c.o
+ .data          0x0000876a        0x0 misc/io_c.o
+ .data          0x0000876a        0x0 misc/ps2_c.o
+
+.bss            0x00008770      0x801
+                0x00008770                        bssStart = .
+ *(.bss)
+ .bss           0x00008770        0x0 stage2/stage2.o
+ .bss           0x00008770      0x800 interrupts/interrupts_asm.o
+ .bss           0x00008f70        0x1 interrupts/interrupts_c.o
+                0x00008f70                state
+ .bss           0x00008f71        0x0 misc/io_c.o
+ .bss           0x00008f71        0x0 misc/ps2_c.o
+ *(COMMON)
+                0x00008f71                        bssEnd = .
+                0x00008f80                        . = ALIGN (0x10)
+                0x00008f80                        stack = .
+                0x0000cf80                        . = (. + 0x4000)
+                0x0000cf80                        stackTop = .
+
+/DISCARD/
+ *(.comment)
+ *(.note*)
+ *(.eh_frame*)
+LOAD stage2/stage2.o
+LOAD interrupts/interrupts.a
+LOAD misc/misc.a
+OUTPUT(stage2.bin binary)

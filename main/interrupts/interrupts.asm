@@ -1,7 +1,6 @@
 bits	32
 global	setupPIC
 global	setupIDT
-extern	serial_putc
 extern	serial_puts
 %include	"pic.mac"
 
@@ -17,13 +16,15 @@ idtDesc:
 section	.text.interrupts
 %macro CENTRY 2
 extern	c_%1
-%1:	pushad
+%1:
+	pushad
+	cld
 	call	c_%1
+	popad
 	mov	eax,%2
 	jz	.skip
 	pout	20h,PIC1_COMMAND
 .skip:
-	popad
 	iret
 %endmacro
 
@@ -71,7 +72,7 @@ setupPIC:
 	io_wait
 	pout	ICW4_8086,PIC2_DATA
 	io_wait
-	pout	0EFh,PIC1_DATA
+	pout	0EDh,PIC1_DATA
 	pout	0FFh,PIC2_DATA
 	ret
 

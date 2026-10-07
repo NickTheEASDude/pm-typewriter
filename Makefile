@@ -3,7 +3,7 @@ GLOBAL_INC = $(abspath $(dir $(lastword $(MAKEFILE_LIST))))/include
 QEMU_I386 := qemu-system-i386
 NASMFLAGS := -I$(CURDIR)/include -f elf
 TRUNCATE := truncate
-CFLAGS = -I$(GLOBAL_INC) -m32 -ffreestanding -nostdlib -fno-pie -fno-pic
+CFLAGS = -O0 -I$(GLOBAL_INC) -m32 -ffreestanding -nostdlib -fno-pie -fno-pic -fno-builtin -fno-stack-protector
 NASM := nasm
 CAT := cat
 DD := dd
@@ -29,6 +29,6 @@ disk.img: $(DEPS)
 	$(CAT) $(DEPS) | $(DD) of=$@ conv=notrunc
 
 run: disk.img
-	$(QEMU_I386) -m 100M -drive if=ide,format=raw,file=$< -boot c -nographic
+	$(QEMU_I386) -m 100M -drive if=ide,format=raw,file=$< -boot c
 	@reset
 FORCE:

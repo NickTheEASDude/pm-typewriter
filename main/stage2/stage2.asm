@@ -5,6 +5,7 @@ extern	stackTop
 extern	setupPIC
 extern	setupUART
 extern	setupIDT
+extern	setupPS2
 extern	bssStart
 extern	bssEnd
 
@@ -20,6 +21,7 @@ start32:
 	
 	call	setupPIC
 	call	setupUART
+	call	setupPS2
 	call	setupIDT
 	sti
 

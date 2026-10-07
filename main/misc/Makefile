@@ -4,7 +4,7 @@
 %_asm.o: %.asm
 	$(NASM) $(NASMFLAGS) -o $@ $<
 
-misc.a: io_c.o uart_asm.o
+misc.a: io_c.o ps2_c.o memory_c.o uart_asm.o
 	$(AR) scrT $@ $^
 
 .PHONY: clean

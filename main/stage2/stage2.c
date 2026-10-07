@@ -2,9 +2,7 @@
 #include <stdint.h>
 
 void cstart(void) {
-	asm volatile ("cli");
-	serial_puts("\nHellorld!\n");
-	asm volatile ("sti");
+	vga_puts("Hellorld!\n");
 	for (;;) {
 		asm volatile ("hlt");
 	}
