@@ -21,11 +21,9 @@ extern	c_%1
 	cld
 	call	c_%1
 	popad
-	mov	eax,%2
-	cmp	eax,0
-	je	.skip
+%if %2 != 0
 	pout	20h,PIC1_COMMAND
-.skip:
+%endif
 	iret
 %endmacro
 
