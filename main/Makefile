@@ -7,7 +7,10 @@ all: stage2.bin
 $(DEPS): FORCE
 	$(MAKE) -C $(dir $@)
 
-stage2.bin: $(DEPS) stage2.ld
+stage2.bin: stage2.elf
+	$(OBJCOPY) -O binary stage2.elf stage2.bin
+
+stage2.elf: $(DEPS) stage2.ld
 	$(LD) --no-pie -T stage2.ld -Map=stage2.map -o $@ $(DEPS)
 
 clean:

@@ -59,8 +59,10 @@ void vga_putc(uint8_t character) {
 		pos += VGA_COLS - (pos % VGA_COLS);
 	else if (character == '\r')
 		pos -= pos % VGA_COLS;
-	else if (character == '\b')
-		VGA_MEM[--pos] = 0x700 | ' ';
+	else if (character == '\b') {
+		if (pos % VGA_COLS)
+			VGA_MEM[--pos] = 0x700 | ' ';
+	}
 	else {
 		VGA_MEM[pos] = 0x700 | character;
 		pos++;

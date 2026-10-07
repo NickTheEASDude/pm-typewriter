@@ -56,7 +56,6 @@ _INTR void c_irq1(void) {
 				break;
 		}
 	}
-	outb(0x80, 0);
 }
 _INTR void c_irq4(void) {
 	uint8_t charReceived = inb(0x3F8);

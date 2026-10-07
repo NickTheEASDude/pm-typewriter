@@ -22,7 +22,8 @@ extern	c_%1
 	call	c_%1
 	popad
 	mov	eax,%2
-	jz	.skip
+	cmp	eax,0
+	je	.skip
 	pout	20h,PIC1_COMMAND
 .skip:
 	iret

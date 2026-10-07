@@ -6,6 +6,15 @@ misc/io_c.o                   interrupts/interrupts_c.o (inb)
 misc/ps2_c.o                  stage2/stage2.o (setupPS2)
 misc/uart_asm.o               stage2/stage2.o (setupUART)
 
+Merging program properties
+
+Removed property 0xc0010001 to merge interrupts/interrupts_c.o (0x1) and stage2/stage2.o (not found)
+Removed property 0xc0010002 to merge interrupts/interrupts_c.o (0x0) and stage2/stage2.o (not found)
+Removed property 0xc0010001 to merge interrupts/interrupts_c.o (not found) and misc/io_c.o (0x1)
+Removed property 0xc0010002 to merge interrupts/interrupts_c.o (not found) and misc/io_c.o (0x0)
+Removed property 0xc0010001 to merge interrupts/interrupts_c.o (not found) and misc/ps2_c.o (0x1)
+Removed property 0xc0010002 to merge interrupts/interrupts_c.o (not found) and misc/ps2_c.o (0x0)
+
 Discarded input sections
 
  .eh_frame      0x00000000       0x34 stage2/stage2.o
@@ -40,7 +49,7 @@ Linker script and memory map
 
                 0x00007e00                        . = 0x7e00
 
-.text           0x00007e00      0x859
+.text           0x00007e00      0x869
  *(.text.start)
  .text.start    0x00007e00       0x36 stage2/stage2.o
                 0x00007e00                start32
@@ -48,61 +57,78 @@ Linker script and memory map
  .text          0x00007e36       0x19 stage2/stage2.o
                 0x00007e36                cstart
  .text.interrupts
-                0x00007e4f       0xa8 interrupts/interrupts_asm.o
- *fill*         0x00007ef7        0x9 
+                0x00007e4f       0xb1 interrupts/interrupts_asm.o
  .text          0x00007f00      0x16f interrupts/interrupts_asm.o
                 0x00007f00                setupPIC
                 0x00007fd7                setupIDT
  .text          0x0000806f        0x0 interrupts/interrupts_c.o
  .text.interrupts
-                0x0000806f      0x17a interrupts/interrupts_c.o
+                0x0000806f      0x169 interrupts/interrupts_c.o
                 0x0000806f                c_exception8
                 0x0000808a                c_irq1
-                0x00008166                c_irq4
- .text          0x000081e9      0x2c9 misc/io_c.o
-                0x000081e9                inb
-                0x000081ff                outb
-                0x0000820e                serial_putc
-                0x00008369                serial_puts
-                0x00008394                vga_putc
-                0x00008487                vga_puts
- .text          0x000084b2      0x121 misc/ps2_c.o
-                0x000084b2                setupPS2
- *fill*         0x000085d3        0xd 
- .text          0x000085e0       0x79 misc/uart_asm.o
-                0x000085e0                setupUART
+                0x00008155                c_irq4
+ .text          0x000081d8      0x2f5 misc/io_c.o
+                0x000081d8                inb
+                0x000081ee                outb
+                0x000081fd                serial_putc
+                0x00008358                serial_puts
+                0x00008383                vga_putc
+                0x000084a2                vga_puts
+ .text          0x000084cd      0x121 misc/ps2_c.o
+                0x000084cd                setupPS2
+ *fill*         0x000085ee        0x2 
+ .text          0x000085f0       0x79 misc/uart_asm.o
+                0x000085f0                setupUART
 
-.data           0x00008660      0x10a
+.iplt           0x00008669        0x0
+ .iplt          0x00008669        0x0 stage2/stage2.o
+
+.rel.dyn        0x0000866c        0x0
+ .rel.got       0x0000866c        0x0 stage2/stage2.o
+ .rel.iplt      0x0000866c        0x0 stage2/stage2.o
+ .rel.text.start
+                0x0000866c        0x0 stage2/stage2.o
+
+.data           0x00008680      0x10a
  *(.rodata .rodata.*)
- .rodata        0x00008660        0xb stage2/stage2.o
- *fill*         0x0000866b       0x15 
- .rodata        0x00008680       0xa7 interrupts/interrupts_c.o
-                0x00008680                translation
- *fill*         0x00008727        0x1 
- .rodata        0x00008728       0x39 misc/ps2_c.o
+ .rodata        0x00008680        0xb stage2/stage2.o
+ *fill*         0x0000868b       0x15 
+ .rodata        0x000086a0       0xa7 interrupts/interrupts_c.o
+                0x000086a0                translation
+ *fill*         0x00008747        0x1 
+ .rodata        0x00008748       0x39 misc/ps2_c.o
  *(.data .data.*)
- .data          0x00008761        0x0 stage2/stage2.o
- *fill*         0x00008761        0x3 
- .data          0x00008764        0x6 interrupts/interrupts_asm.o
- .data          0x0000876a        0x0 interrupts/interrupts_c.o
- .data          0x0000876a        0x0 misc/io_c.o
- .data          0x0000876a        0x0 misc/ps2_c.o
+ .data          0x00008781        0x0 stage2/stage2.o
+ *fill*         0x00008781        0x3 
+ .data          0x00008784        0x6 interrupts/interrupts_asm.o
+ .data          0x0000878a        0x0 interrupts/interrupts_c.o
+ .data          0x0000878a        0x0 misc/io_c.o
+ .data          0x0000878a        0x0 misc/ps2_c.o
 
-.bss            0x00008770      0x801
-                0x00008770                        bssStart = .
+.got            0x0000878c        0x0
+ .got           0x0000878c        0x0 stage2/stage2.o
+
+.got.plt        0x0000878c        0x0
+ .got.plt       0x0000878c        0x0 stage2/stage2.o
+
+.igot.plt       0x0000878c        0x0
+ .igot.plt      0x0000878c        0x0 stage2/stage2.o
+
+.bss            0x00008790      0x801
+                0x00008790                        bssStart = .
  *(.bss)
- .bss           0x00008770        0x0 stage2/stage2.o
- .bss           0x00008770      0x800 interrupts/interrupts_asm.o
- .bss           0x00008f70        0x1 interrupts/interrupts_c.o
-                0x00008f70                state
- .bss           0x00008f71        0x0 misc/io_c.o
- .bss           0x00008f71        0x0 misc/ps2_c.o
+ .bss           0x00008790        0x0 stage2/stage2.o
+ .bss           0x00008790      0x800 interrupts/interrupts_asm.o
+ .bss           0x00008f90        0x1 interrupts/interrupts_c.o
+                0x00008f90                state
+ .bss           0x00008f91        0x0 misc/io_c.o
+ .bss           0x00008f91        0x0 misc/ps2_c.o
  *(COMMON)
-                0x00008f71                        bssEnd = .
-                0x00008f80                        . = ALIGN (0x10)
-                0x00008f80                        stack = .
-                0x0000cf80                        . = (. + 0x4000)
-                0x0000cf80                        stackTop = .
+                0x00008f91                        bssEnd = .
+                0x00008fa0                        . = ALIGN (0x10)
+                0x00008fa0                        stack = .
+                0x0000cfa0                        . = (. + 0x4000)
+                0x0000cfa0                        stackTop = .
 
 /DISCARD/
  *(.comment)
@@ -111,4 +137,91 @@ Linker script and memory map
 LOAD stage2/stage2.o
 LOAD interrupts/interrupts.a
 LOAD misc/misc.a
-OUTPUT(stage2.bin binary)
+OUTPUT(stage2.elf elf32-i386)
+
+.debug_aranges  0x00000000       0xd0
+ .debug_aranges
+                0x00000000       0x20 stage2/stage2.o
+ .debug_aranges
+                0x00000020       0x20 interrupts/interrupts_asm.o
+ .debug_aranges
+                0x00000040       0x30 interrupts/interrupts_c.o
+ .debug_aranges
+                0x00000070       0x20 misc/io_c.o
+ .debug_aranges
+                0x00000090       0x20 misc/ps2_c.o
+ .debug_aranges
+                0x000000b0       0x20 misc/uart_asm.o
+
+.debug_pubnames
+                0x00000000        0x0
+ .debug_pubnames
+                0x00000000        0x0 stage2/stage2.o
+ .debug_pubnames
+                0x00000000        0x0 interrupts/interrupts_asm.o
+ .debug_pubnames
+                0x00000000        0x0 misc/uart_asm.o
+
+.debug_info     0x00000000      0x60f
+ .debug_info    0x00000000       0x95 stage2/stage2.o
+ .debug_info    0x00000095       0x74 interrupts/interrupts_asm.o
+ .debug_info    0x00000109      0x19d interrupts/interrupts_c.o
+ .debug_info    0x000002a6      0x21d misc/io_c.o
+ .debug_info    0x000004c3       0xe4 misc/ps2_c.o
+ .debug_info    0x000005a7       0x68 misc/uart_asm.o
+
+.debug_abbrev   0x00000000      0x380
+ .debug_abbrev  0x00000000       0x6e stage2/stage2.o
+ .debug_abbrev  0x0000006e       0x1d interrupts/interrupts_asm.o
+ .debug_abbrev  0x0000008b      0x103 interrupts/interrupts_c.o
+ .debug_abbrev  0x0000018e      0x12d misc/io_c.o
+ .debug_abbrev  0x000002bb       0xa8 misc/ps2_c.o
+ .debug_abbrev  0x00000363       0x1d misc/uart_asm.o
+
+.debug_line     0x00000000      0x584
+ .debug_line    0x00000000       0x54 stage2/stage2.o
+ .debug_line    0x00000054      0x146 interrupts/interrupts_asm.o
+ .debug_line    0x0000019a       0xe6 interrupts/interrupts_c.o
+ .debug_line    0x00000280      0x18d misc/io_c.o
+ .debug_line    0x0000040d       0xa9 misc/ps2_c.o
+ .debug_line    0x000004b6       0xce misc/uart_asm.o
+
+.debug_frame    0x00000000        0x0
+ .debug_frame   0x00000000        0x0 stage2/stage2.o
+ .debug_frame   0x00000000        0x0 interrupts/interrupts_asm.o
+ .debug_frame   0x00000000        0x0 misc/uart_asm.o
+
+.debug_str      0x00000000      0x1bf
+ .debug_str     0x00000000      0x1bf stage2/stage2.o
+                                 0xf9 (size before relaxing)
+ .debug_str     0x000001bf        0x0 interrupts/interrupts_c.o
+                                0x187 (size before relaxing)
+ .debug_str     0x000001bf        0x0 misc/io_c.o
+                                0x16d (size before relaxing)
+ .debug_str     0x000001bf        0x0 misc/ps2_c.o
+                                0x11b (size before relaxing)
+
+.debug_loc      0x00000000        0x0
+ .debug_loc     0x00000000        0x0 stage2/stage2.o
+ .debug_loc     0x00000000        0x0 interrupts/interrupts_asm.o
+ .debug_loc     0x00000000        0x0 misc/uart_asm.o
+
+.debug_line_str
+                0x00000000      0x131
+ .debug_line_str
+                0x00000000      0x131 stage2/stage2.o
+                                 0xbb (size before relaxing)
+ .debug_line_str
+                0x00000131        0x0 interrupts/interrupts_c.o
+                                0x108 (size before relaxing)
+ .debug_line_str
+                0x00000131        0x0 misc/io_c.o
+                                 0xae (size before relaxing)
+ .debug_line_str
+                0x00000131        0x0 misc/ps2_c.o
+                                 0xe7 (size before relaxing)
+
+.debug_rnglists
+                0x00000000       0x21
+ .debug_rnglists
+                0x00000000       0x21 interrupts/interrupts_c.o
