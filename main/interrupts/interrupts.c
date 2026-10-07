@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include <stdbool.h>
+#include "scancodes.h" // translation, translationUpper, translationCaps, translationUpper
 #include "memory.h"
 #include "io.h"
 
@@ -7,25 +8,17 @@
 
 typedef enum {
 	STATE_NORMAL,
+	STATE_RELEASE,
 	STATE_SKIP
 } kbdState_t;
 
 static kbdState_t state = STATE_NORMAL;
 
-const char translation[0x80] = {
-	[0x0E] = '`', [0x16] = '1', [0x1E] = '2', [0x26] = '3', [0x25] = '4',
-	[0x2E] = '5', [0x36] = '6', [0x3D] = '7', [0x3E] = '8', [0x46] = '9',
-	[0x45] = '0', [0x4E] = '-', [0x55] = '=', [0x66] = '\b', [0x0D] = '\t',
-	[0x15] = 'Q', [0x1D] = 'W', [0x24] = 'E', [0x2D] = 'R', [0x2C] = 'T',
-	[0x35] = 'Y', [0x3C] = 'U', [0x43] = 'I', [0x44] = 'O', [0x4D] = 'P',
-	[0x54] = '[', [0x5B] = ']', [0x5A] = '\n', [0x5D] = '\\',
-	[0x1C] = 'A', [0x1B] = 'S', [0x23] = 'D', [0x2B] = 'F', [0x34] = 'G',
-	[0x33] = 'H', [0x3B] = 'J', [0x42] = 'K', [0x4B] = 'L', [0x4C] = ';',
-	[0x52] = '\'',
-	[0x1A] = 'Z', [0x22] = 'X', [0x21] = 'C', [0x2A] = 'V', [0x32] = 'B',
-	[0x31] = 'N', [0x3A] = 'M', [0x41] = ',', [0x49] = '.', [0x4A] = '/',
-	[0x29] = ' ',
-};
+
+static const uint8_t *transPoint = translation;
+static bool lShift = false;
+static bool rShift = false;
+static bool caps = false;
 
 _INTR void c_exception8(void) {
 	serial_puts("FATAL: CPU Exception, halting system.\n");
@@ -37,15 +30,41 @@ _INTR void c_irq1(void) {
 		uint8_t scancode = inb(0x60);
 		switch (state) {
 			case STATE_NORMAL:
-				if (scancode == 0xE0 || scancode == 0xF0)
+				if (scancode == 0xE0)
 					state = STATE_SKIP;
-				else {
-					uint8_t character = translation[scancode];
+				else if (scancode == 0xF0)
+					state = STATE_RELEASE;
+				else if (scancode == 0x58) {
+					caps = !caps;
+					if (lShift || rShift)
+						transPoint = (caps ? translationCapsUpper : translationUpper);
+					else
+						transPoint = (caps ? translationCaps : translation);
+				} else {
+					if (scancode == 0x12 || scancode == 0x59) {
+						if (scancode == 0x12)
+							lShift = true;
+						if (scancode == 0x59)
+							rShift = true;
+						transPoint = (caps ? translationCapsUpper : translationUpper);
+					}
+					uint8_t character = transPoint[scancode];
 					if (character)
 						vga_putc(character);
 					state = STATE_NORMAL;
 				}
 				break;
+
+			case STATE_RELEASE:
+				if (scancode == 0x12)
+					lShift = false;
+				if (scancode == 0x59)
+					rShift = false;
+				if (!lShift && !rShift)
+					transPoint = (caps ? translationCaps : translation);
+				state = STATE_NORMAL;
+				break;
+
 			case STATE_SKIP:
 				state = STATE_NORMAL;
 				break;

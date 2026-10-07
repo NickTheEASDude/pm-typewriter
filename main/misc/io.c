@@ -49,6 +49,17 @@ void serial_puts(char *string) {
 		serial_putc(*string++);
 }
 
+void serial_puti(int num) {
+	uint8_t buf[100];
+	buf[99] = 0;
+	int point = 98;
+	while (num != 0) {
+		buf[point--] = (num % 10) + 48;
+		num /= 10;
+	}
+	serial_puts(buf + point + 1);
+}
+
 void vga_putc(uint8_t character) {
 	uint16_t pos = vga_getCursor();
 	if (pos / VGA_COLS >= VGA_ROWS) {
@@ -77,4 +88,15 @@ void vga_putc(uint8_t character) {
 void vga_puts(char *string) {
 	while (*string)
 		vga_putc(*string++);
+}
+
+void vga_puti(int num) {
+	uint8_t buf[100];
+	buf[99] = 0;
+	int point = 98;
+	while (num != 0) {
+		buf[point--] = (num % 10) + 48;
+		num /= 10;
+	}
+	vga_puts(buf + point + 1);
 }
