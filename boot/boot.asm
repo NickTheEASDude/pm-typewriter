@@ -33,7 +33,7 @@ start32:
 
 disk:	db	10h
 	db	0
-	dw	80
+	dw	2
 	dw	7E00h
 	dw	0
 	dd	01

@@ -1,3 +1,6 @@
+%define IDT_ENTRIES	256
+%define	IDT_SIZE	IDT_ENTRIES*8
+
 bits	32
 global	setupPIC
 global	setupIDT
@@ -10,7 +13,7 @@ idt:	resq	256
 
 section	.data
 idtDesc:
-	dw	idt + 255
+	dw	IDT_SIZE - 1
 	dd	idt
 
 section	.text.interrupts

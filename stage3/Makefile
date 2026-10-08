@@ -18,6 +18,6 @@ clean:
 		$(MAKE) -C $$dir clean; \
 	\
 	done
-	$(RM) *.bin *.o *.map
+	$(RM) *.bin *.o *.map *.elf
 
 FORCE:

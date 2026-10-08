@@ -10,7 +10,7 @@ NASM := nasm
 CAT := cat
 DD := dd
 
-DEPS := boot/boot.bin stage3/stage3.bin
+DEPS := boot/boot.bin stage2/stage2.bin stage3/stage3.bin
 .PHONY: all clean run FORCE
 
 all: $(DEPS) disk.img
