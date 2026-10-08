@@ -4,7 +4,7 @@
 %_asm.o: %.asm
 	$(NASM) $(NASMFLAGS) -o $@ $<
 
-stage2.o: stage2_c.o stage2_asm.o
+main.o: main_c.o main_asm.o
 	$(LD) -m elf_i386 -r -o $@ $^
 
 .PHONY: clean

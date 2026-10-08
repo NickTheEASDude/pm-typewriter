@@ -9,7 +9,8 @@
 typedef enum {
 	STATE_NORMAL,
 	STATE_RELEASE,
-	STATE_SKIP
+	STATE_EXTEND,
+	STATE_EXTEND_RELEASE
 } kbdState_t;
 
 static kbdState_t state = STATE_NORMAL;
@@ -31,7 +32,7 @@ _INTR void c_irq1(void) {
 		switch (state) {
 			case STATE_NORMAL:
 				if (scancode == 0xE0)
-					state = STATE_SKIP;
+					state = STATE_EXTEND;
 				else if (scancode == 0xF0)
 					state = STATE_RELEASE;
 				else if (scancode == 0x58) {
@@ -65,7 +66,14 @@ _INTR void c_irq1(void) {
 				state = STATE_NORMAL;
 				break;
 
-			case STATE_SKIP:
+			case STATE_EXTEND:
+				if (scancode == 0xF0)
+					state = STATE_EXTEND_RELEASE;
+				else
+					state = STATE_NORMAL;
+				break;
+			
+			case STATE_EXTEND_RELEASE:
 				state = STATE_NORMAL;
 				break;
 		}
@@ -73,13 +81,12 @@ _INTR void c_irq1(void) {
 }
 _INTR void c_irq4(void) {
 	uint8_t charReceived = inb(0x3F8);
-	if (charReceived == 8 || charReceived == 0x7F) {
+	if (charReceived == '\r')
+		serial_putc('\n');
+	else if (charReceived == 8 || charReceived == 0x7F) {
 		serial_putc(8);
 		serial_putc(' ');
 		serial_putc(8);
-	} else if (charReceived == '\r') {
-		serial_putc('\r');
-		serial_putc('\n');
 	} else
 		serial_putc(charReceived);
 }

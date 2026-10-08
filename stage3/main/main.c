@@ -3,7 +3,7 @@
 
 void cstart(void) {
 	vga_puts("Hellorld!\n");
-	vga_puti(58);
+	serial_puts("\nHellorld!\n");
 	for (;;) {
 		asm volatile ("hlt");
 	}

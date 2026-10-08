@@ -14,11 +14,6 @@ void outb(uint16_t port, uint8_t val) {
 	asm volatile ("outb %b0, %w1" :: "a" (val), "Nd" (port) : "memory");
 }
 
-void serial_putc(uint8_t character) {
-	while (inb(0x3FD) == 0x20);
-	outb(0x3F8, character);
-}
-
 static uint16_t vga_getCursor(void) {
 	uint16_t pos = 0;
 	outb(0x3D4, 0xE);
@@ -42,6 +37,15 @@ static void vga_scroll(void) {
 	for (uint16_t pos = VGA_COLS * (VGA_ROWS - 1); pos < VGA_COLS * VGA_ROWS; pos++)
 		VGA_MEM[pos] = ' ' | 0x700;
 	vga_setCursor(VGA_COLS * (VGA_ROWS - 1));
+}
+
+void serial_putc(uint8_t character) {
+	while (inb(0x3FD) == 0x20);
+	if (character == '\n') {
+		outb(0x3F8, '\r');
+		while (inb(0x3Fd) == 0x20);
+	}
+	outb(0x3F8, character);
 }
 
 void serial_puts(char *string) {
