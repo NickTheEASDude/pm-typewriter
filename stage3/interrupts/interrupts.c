@@ -69,8 +69,13 @@ _INTR void c_irq1(void) {
 			case STATE_EXTEND:
 				if (scancode == 0xF0)
 					state = STATE_EXTEND_RELEASE;
-				else
+				else {
+					if (scancode == 0x4A)
+						vga_putc('/');
+					else if (scancode == 0x5A)
+						vga_putc('\n');
 					state = STATE_NORMAL;
+				}
 				break;
 			
 			case STATE_EXTEND_RELEASE:

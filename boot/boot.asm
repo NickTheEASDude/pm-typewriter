@@ -1,6 +1,10 @@
 org	7C00h
 bits	16
 
+entry:
+	jmp	short	start16
+	nop
+times	87	db	0
 start16:
 	cli
 	mov	ax,0
@@ -21,7 +25,7 @@ start16:
 	mov	eax,cr0
 	or	al,1
 	mov	cr0,eax
-	jmp	08h:(7C00h + (start32 - start16))
+	jmp	08h:(7C00h + (start32 - entry))
 
 bits	32
 start32:
@@ -54,5 +58,5 @@ gdt:	dq	0
 	db	0
 gdtDesc:dw	gdtDesc - gdt - 1
 	dd	gdt
-pad:	times	510-($-start16)	db	0
+pad:	times	510-($-entry)	db	0
 	dw	0AA55h

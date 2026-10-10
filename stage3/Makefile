@@ -1,5 +1,4 @@
 DEPS := main/main.o interrupts/interrupts.a misc/misc.a
-LDFLAGS := --no-pie
 .PHONY: all clean FORCE
 
 all: stage3.bin
